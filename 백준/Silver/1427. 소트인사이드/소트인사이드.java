@@ -11,17 +11,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String number = bufferedReader.readLine();
 
-        List<Integer> digits = number.chars()
+        List<String> sortedDigits = number.chars()
                 .map(num -> num - '0')
                 .boxed()
                 .sorted(Collections.reverseOrder())
+                .map(String::valueOf)
                 .collect(Collectors.toList());
 
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int digit : digits) {
-            stringBuilder.append(digit);
-        }
-
-        System.out.println(stringBuilder);
+        System.out.println(String.join("", sortedDigits));
     }
 }
