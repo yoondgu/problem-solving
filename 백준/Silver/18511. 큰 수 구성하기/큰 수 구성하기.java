@@ -2,13 +2,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, numbersCount, max = 0;
-    static Integer[] numbers;
+    static int[] numbers;
 
     public static void main(String[] args) throws IOException {
 
@@ -16,7 +15,7 @@ public class Main {
         StringTokenizer first = new StringTokenizer(br.readLine());
         N = Integer.parseInt(first.nextToken());
         numbersCount = Integer.parseInt(first.nextToken());
-        numbers = new Integer[numbersCount];
+        numbers = new int[numbersCount];
 
         StringTokenizer second = new StringTokenizer(br.readLine(), " ");
         int i = 0;
@@ -24,7 +23,7 @@ public class Main {
             numbers[i] = Integer.parseInt(second.nextToken());
             i++;
         }
-        Arrays.sort(numbers, Collections.reverseOrder());
+        Arrays.sort(numbers);
 
         findMax(0);
         System.out.println(max);
