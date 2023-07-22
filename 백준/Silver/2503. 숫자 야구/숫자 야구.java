@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -10,71 +12,71 @@ import java.util.stream.IntStream;
 
 public class Main {
 
-    private static int NUMBER_COUNT = 3;
+    private static class Guess {
+        String numbers;
+        int strike;
+        int ball;
+
+        public Guess(String numbers, int strike, int ball) {
+            this.numbers = numbers;
+            this.strike = strike;
+            this.ball = ball;
+        }
+    }
+
+    private static List<Guess> guesses = new ArrayList<>();
+    private static int N;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N = Integer.parseInt(br.readLine());
+        N = Integer.parseInt(br.readLine());
 
-        Map<String, Integer> strikeCount = new HashMap<>();
-        Map<String, Integer> ballCount = new HashMap<>();
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-            String numbers = st.nextToken();
-            strikeCount.put(numbers, Integer.parseInt(st.nextToken()));
-            ballCount.put(numbers, Integer.parseInt(st.nextToken()));
+            guesses.add(new Guess(st.nextToken(), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
         int answerCount = 0;
-        for (int i = 1; i < 10; i++) {
-            for (int j = 1; j < 10; j++) {
-                if (i == j) {
-                    continue;
-                }
-                for (int k = 1; k < 10; k++) {
-                    if (j == k || i == k) {
-                        continue;
-                    }
-                    String answers = i + "" + j + k;
-                    if (isStrikeMatch(strikeCount, answers) && isBallMatch(ballCount, answers)) {
-                        answerCount++;
-                    }
-                }
+        for (int i = 123; i <= 987; i++) {
+            String answer = String.valueOf(i);
+            if (answer.charAt(0) == answer.charAt(1))
+                continue;
+            if (answer.charAt(0) == answer.charAt(2))
+                continue;
+            if (answer.charAt(1) == answer.charAt(2))
+                continue;
+            if (answer.contains("0"))
+                continue;
+
+            if (isMatch(answer)) {
+                answerCount++;
             }
         }
 
         System.out.println(answerCount);
     }
 
-    private static boolean isStrikeMatch(Map<String, Integer> strikeCount, String answers) {
-        for (Entry<String, Integer> entry : strikeCount.entrySet()) {
-            if (countStrike(entry.getKey(), answers) != entry.getValue()) {
-                return false;
+    private static boolean isMatch(String answer) {
+        int matchCount = 0;
+        for (Guess guess : guesses) {
+            int strike = 0;
+            int ball = 0;
+            for (int j = 0; j < 3; j++) {
+                String numbers = guess.numbers;
+                char number = numbers.charAt(j);
+                if (answer.contains(String.valueOf(number))) {
+                    if (answer.charAt(j) == number) {
+                        strike++;
+                    } else {
+                        ball++;
+                    }
+                }
+            }
+            if (strike == guess.strike && ball == guess.ball) {
+                matchCount ++;
             }
         }
-        return true;
+        return matchCount == N;
     }
-
-    private static boolean isBallMatch(Map<String, Integer> ballCount, String answers) {
-        for (Entry<String, Integer> entry : ballCount.entrySet()) {
-            if (countBall(entry.getKey(), answers) != entry.getValue()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static int countStrike(String numbers, String answers) {
-        return (int) IntStream.range(0, NUMBER_COUNT)
-                .filter(index -> Objects.equals(numbers.charAt(index), answers.charAt(index)))
-                        .count();
-    }
-
-    private static int countBall(String numbers, String answers) {
-        return (int) IntStream.range(0, NUMBER_COUNT)
-                .filter(index -> !Objects.equals(numbers.charAt(index), answers.charAt(index)) && answers.contains(String.valueOf(numbers.charAt(index))))
-                .count();
-    }
-
 }
