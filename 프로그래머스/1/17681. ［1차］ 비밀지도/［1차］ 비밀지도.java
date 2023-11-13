@@ -6,22 +6,15 @@ class Solution {
                 
         for (int i=0; i<n; i++) {
             // 숫자를 이진수로 바꾼다.
-            String first = Integer.toBinaryString(arr1[i]);
-            String second = Integer.toBinaryString(arr2[i]);
-            
-            if (first.length() < n) {
-                first = "0".repeat(n - first.length()) + first;
-            }
-            if (second.length() < n) {
-                second = "0".repeat(n - second.length()) + second;
-            }
+            boolean[] first = toBinary(n, arr1[i]);
+            boolean[] second = toBinary(n, arr2[i]);
             
             // 이진수로 바꾼 값을 연산한다.
             StringBuilder sb = new StringBuilder();
             for (int j=0; j<n; j++) {
-                char firstValue = first.charAt(j);
-                char secondValue = second.charAt(j);
-                if ('1' == firstValue || '1' == secondValue) {
+                boolean isFirstBlocked = first[j];
+                boolean isSecondBlocked = second[j];
+                if (isFirstBlocked || isSecondBlocked) {
                     sb.append("#");
                 } else {
                     sb.append(" ");
@@ -30,7 +23,27 @@ class Solution {
             answer[i] = sb.toString();
         }
         
-        // 이진수 연산 ..
         return answer;
+    }
+    
+    public boolean[] toBinary(int n, int number) {
+        // 2로 나눈 나머지를 구하고, 나눴던 값을 다시 나머지를 구한다.
+        // 28 -> (14) 0
+        // 14 -> (7) 0
+        // 7 -> (3) 1
+        // 3 -> (1) 1
+        // 1 -> (0) 1
+        int divide = number;
+        boolean[] binary = new boolean[n];
+        for (int i=n-1; i>=0; i--) {
+            if (divide == 0) {
+                continue;
+            }
+            if (divide%2 == 1) {
+                binary[i] = true;
+            }
+            divide = divide/2;
+        }
+        return binary;
     }
 }
