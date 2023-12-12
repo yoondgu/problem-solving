@@ -1,43 +1,44 @@
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class Main {
 
-    private static int N;
-    private static int M;
-    private static boolean[] visited;
-    private static int[] arr;
+    static int N;
+    static int M;
+    static boolean[] visited;
+    static int[] numbers;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        StringTokenizer st = new StringTokenizer(br.readLine(), " ");
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
+        String[] input = scanner.nextLine().split(" ");
+        N = Integer.parseInt(input[0]);
+        M = Integer.parseInt(input[1]);
         visited = new boolean[N];
-        arr = new int[M];
-
-        find(0);
+        numbers = new int[M];
+        dfs(0);
     }
 
-    private static void find(int depth) {
+    // 1 2 3 4
+    // 1 2 3
+    // 1 2 4
+    //
+    public static void dfs(int depth) {
         if (depth == M) {
-            for (final int number : arr) {
-                System.out.print(number + " ");
+            StringBuilder sb = new StringBuilder();
+            for (int number : numbers) {
+                sb.append(number).append(" ");
             }
-            System.out.println();
+            System.out.println(sb);
             return;
         }
 
         for (int i = 0; i < N; i++) {
-
             if (!visited[i]) {
                 visited[i] = true;
-                arr[depth] = i + 1;
-                find(depth + 1);
+                numbers[depth] = i+1;
+                // 숫자 1에서 너비 탐색 시작. visited에서 1 거르고 2,3,4에서 탐색.. -> 1, 2, 3, 4에서 반복
+                // 1 2 - depth 1
+                dfs(depth + 1);
                 visited[i] = false;
             }
         }
